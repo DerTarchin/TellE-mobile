@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block scene_element %}
+<div class="scene_element scene_element--fadeinleft">
+{% endblock %}
+
+{% block navlink %}
+<a href="{% url 'shows' user.settings.default_show_list %}">
+	{% include 'converted_svg/shows.svg.html' %}
+</a>
+{% endblock %}
+
+{% block listbar %}
+<div class="list-panel">
+    <input type="hidden" id="list_url" value="{% url 'movies' 'listname' %}">
+    {% for list in lists %}
+        <a href="{% url 'movies' list.name %}">
+            <div class="list-option {% if list.name == curr_list.name %}active{% endif %}">
+                {{ list.pretty_name }}
+                <div class="list-icon" id="list-{{list.name}}-icon">
+                    {% include 'converted_svg/list_sort.html' with name=list.name type=list.type display_type="list" %}
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+    <div class="list-option" id="add-list-option" url="{% url 'add_list' %}">
+        Add List
+        <div class="list-icon" id="add-list-icon">
+        </div>
+    </div>
+    &nbsp;
+</div>
+{% endblock %}
+
+{% block content %}
+
+<!-- Movie Posters -->
+	{% if media %}
+	<div class="row nopadding grid">
+		{% for item in media %}
+			{% if user.settings.default_movie_view == "poster" %}
+				{% include "poster.html" with type="movie" %}
+				{% if forloop.counter|divisibleby:3 %}
+					</div>
+					<div class="row nopadding grid">
+				{% endif %}
+			{% else %}
+				{% include "fanart.html" with type="movie" %}
+				</div>
+				<div class="row nopadding grid">
+			{% endif %}
+		{% endfor %}
+		</div>
+		<div class="row nopadding grid">
+			<div class="navbar-space">&nbsp;</div>
+		</div>
+	{% else %}
+		<div class="empty-backdrop">
+			{% include "converted_svg/movies.svg.html" %}
+			<h1>You have no movies!</h1>
+			<span id="swipe-help">{% include "converted_svg/swipe.svg.html" %}</span>
+		</div>
+	{% endif %}
+{% endblock %}

@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}
+<title>{{ media_info.title}} | Tell-E</title>
+<meta property="og:type"          content="website" />
+<meta property="og:title"         content="{{ media_info.title}} | Tell-E" />
+{% if media_info.overview %}
+<meta property="og:description"   content="{{ media_info.overview }}" />
+{% endif %}
+{% if media_info.images.poster.thumb %}
+<meta property="og:image"         content="{{ media_info.images.poster.thumb }}" />
+{% endif %}
+{% endblock %}
+
+{% block scene_element %}
+<div class="scene_element scene_element--fadeinup">
+{% endblock %}
+
+{% block navlink %}
+{% if user.is_authenticated %}
+<a href="{% url 'movies' user.settings.default_movie_list %}">
+	{% include 'converted_svg/movies.svg.html' %}
+</a>
+{% else %}
+<a href="{% url 'movies' 'all' %}">
+	{% include 'converted_svg/movies.svg.html' %}
+</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<input type="hidden" id="info_page_url" value="movies/{{ media_info.ids.trakt }}">
+<style>
+.navbar {
+	background-color: #f7f7f7;
+}
+.navlink svg {
+	fill: #244a4a;
+}
+</style>
+
+<div class="info-intro">
+	<div class="info-poster">
+		{% if media_info.images.poster.medium %}
+			<img src="{{ media_info.images.poster.medium }}">
+			<!-- <img class="lazy" src="{% static 'imgs/placeholder_poster.png' %}" data-original="{{ media_info.images.poster.medium }}"> -->
+		{% elif media_info.images.poster.thumb %}
+			<img src="{{ media_info.images.poster.thumb }}">
+			<!-- <img class="lazy" src="{% static 'imgs/placeholder_poster.png' %}" data-original="{{ media_info.images.poster.thumb }}"> -->
+		{% endif %}
+	</div>
+	<div class="info-banner-container">
+		<div class="info-banner">
+			<div class="info-title">
+			{% if not media_info.images.poster.medium or not media_info.images.poster.thumb %}
+				{{ media_info.title }}
+			{% endif %}
+			</div>
+			<div class="info-arrow">
+				{% include 'converted_svg/arrow.svg.html' %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="info-content transition" id="content">
+	<div class="info-header">
+		{% if media_info.images.fanart.thumb %}
+			<img src="{{ media_info.images.fanart.thumb }}">
+		{% else %}
+			<div style="height: 50px; width: 100%">&nbsp;</div>
+		{% endif %}
+		<div class="title-container">
+			<div class="info-title-br">
+			</div>
+			<div class="info-title">
+				{% with title=media_info.title.split articles="a an the" lowercase="a b c d e f g h i j k l m n o p q r s t u v w x y z" %}  
+					{% with first=title|first %}
+						{% if first.lower in articles.split %}
+							<span class="thin">{{ first }}</span>
+						{% else %}
+							{{ first }}
+						{% endif %}
+					{% endwith %}
+					{% for word in title|slice:"1:" %}
+						{% if word|slice:"1" in lowercase.split %}
+							<span class="thin">{{ word }}</span>
+						{% else %}
+							{{ word }}
+						{% endif %}
+					{% endfor %}
+				{% endwith %}
+			</div>
+		</div>
+	</div>
+
+	<div class="options-bar">
+		{% if media_info.ids.imdb %}
+		<div class="option-container">
+			<a href="http://www.imdb.com/title/{{ media_info.ids.imdb }}" target="_blank">
+				{% include 'converted_svg/info.svg.html' %}
+			</a>
+		</div>
+		{% elif media_info.ids.tmdb %}
+		<div class="option-container">
+			<a href="https://www.themoviedb.org/movie/{{ media_info.ids.tmdb }}" target="_blank">
+				{% include 'converted_svg/info.svg.html' %}
+			</a>
+		</div>
+		{% endif %}
+		{% if add %}
+			<div class="option-container" id="add-icon">
+				<form class="add-media-form" url="{% url 'add_media' %}" id="search-add-{{ media_info.ids.trakt }}">
+					 <input type="hidden" name="media-id" value="{{ media_info.ids.trakt }}">
+					 <input type="hidden" name="media-type" value="movie">
+						 {% csrf_token %}
+					 <label>
+						<button type="submit"></button>
+						{% include "converted_svg/add.svg.html" %}
+					 </label>
+			    </form>
+			</div>
+		{% endif %}
+		<div class="option-container" id="added-icon" style="display:none">
+			{% include 'converted_svg/add_selected.svg.html' %}
+		</div>
+		<div class="option-container" onclick='mark_watched_movie({{ media_info.ids.trakt }});' id="to-watch-icon" {% if watched or add %}style="display:none"{% endif %}>
+			{% include 'converted_svg/check.svg.html' %}
+		</div>
+		<div class="option-container" onclick='mark_watched_movie({{ media_info.ids.trakt }});' id="watched-icon" {% if add or not watched %}style="display:none"{% endif %}>
+			{% include 'converted_svg/check_selected.svg.html' %}
+		</div>
+		<div class="option-container" id="share">
+			{% include 'converted_svg/share.svg.html' %}
+		</div>
+		<div class="option-container" id="share_selected" style="display: none;">
+			{% include 'converted_svg/share_selected.svg.html' %}
+		</div>
+		<div class="option-container">
+			<a href="http://www.fandango.com/search/?q={{ media_info.title }}" target="_blank">
+				{% include 'converted_svg/ticket.svg.html' %}
+			</a>
+		</div>
+	</div>
+
+	<section class="share">
+	<div class="share-section">
+		<div class="share-box triangle-border top">
+			<div class="share-icon share-fb">
+				<a class="share-link" href="https://www.facebook.com/sharer/sharer.php?u=" target="_blank">
+				   {% include 'converted_svg/fb.svg.html' %}
+				</a>
+			</div>
+			<div class="share-icon share-tw">
+				<a href="https://twitter.com/intent/tweet?url=" text="Check out {{ media_info.title }}!" target="_blank">
+					{% include 'converted_svg/tw.svg.html' %}
+				</a>
+			</div>
+			<div class="share-icon share-gp">
+				<a href="https://plus.google.com/share?url=" target="_blank">
+					{% include 'converted_svg/gp.svg.html' %}
+				</a>
+			</div>
+			<div class="share-icon share-em">
+				<a href="mailto:?subject={{ media_info.title }}&amp;body=Check out the movie {{ media_info.title }}: ">
+				  {% include 'converted_svg/em.svg.html' %}
+				</a>
+			</div>
+		</div>
+	</div>
+	</section>
+
+	<div class="content-container">
+		<span class="yanone">
+			{{ media_info.overview }}
+		</span>
+		<br>
+		<div class="extra-info">
+			{% if media_info.released and media_info.released != "None" %}
+				<span class="thin">Released</span> {{ media_info.released|date:"F" }} {{ media_info.released|date:"j" }}, {{ media_info.released|date:"Y" }}
+				<br>
+			{% endif %}
+
+			{% if media_info.genres and media_info.genres|length > 0 %}
+				<span class="thin">Genres</span> 
+				{% for genre in media_info.genres %}
+					{{ genre }}
+					{% if forloop.counter != media_info.genres|length %}
+						,
+					{% endif %}
+				{% endfor %}
+				<br>
+			{% endif %}
+
+			{% if media_info.runtime and media_info.runtime != "None" %}
+				<span class="thin">Runtime</span> {{ media_info.runtime }} MINUTES
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-2">
+		</div>
+		<div class="col-xs-8">
+			<hr>
+		</div>
+		<div class="col-xs-2">
+		</div>
+	</div>
+
+	<div class="person-scroll">
+		{% for member in media_people.cast %}
+			<div class="person-poster scroll-item" url="{% url 'person_info_page' member.person.ids.trakt %}">
+				<div class="person-poster-img">
+					<img {% if member.person.images.headshot.thumb %}class="lazy"{% endif %} src="{% static 'imgs/placeholder_poster_person.png' %}" data-original="{{ member.person.images.headshot.thumb }}">
+				</div>
+				<div class="person-title">{{ member.character }}</div>
+				<div class="person-name">{{ member.person.name }}</div>
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="row">
+		<div class="col-xs-2">
+		</div>
+		<div class="col-xs-8">
+			<hr>
+		</div>
+		<div class="col-xs-2">
+		</div>
+	</div>
+
+	<div class="person-scroll">
+		{% for member in media_people.crew %}
+			<div class="person-poster scroll-item" url="{% url 'person_info_page' member.person.ids.trakt %}">
+				<div class="person-poster-img">
+					<img {% if member.person.images.headshot.thumb %}class="lazy"{% endif %} src="{% static 'imgs/placeholder_poster_person.png' %}" data-original="{{ member.person.images.headshot.thumb }}">
+				</div>
+				<div class="person-title">{{ member.job }}</div>
+				<div class="person-name">{{ member.person.name }}</div>
+			</div>
+		{% endfor %}
+	</div>
+	<a id="hidden-link">&nbsp;</a>
+	<div class="row">
+		<div class="col-xs-2">
+		</div>
+		<div class="col-xs-8">
+			<hr>
+		</div>
+		<div class="col-xs-2">
+		</div>
+	</div>
+</div>
+<script src="{% static 'js/info_page.js' %}"></script>
+{% endblock %}

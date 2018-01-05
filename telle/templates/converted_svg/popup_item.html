@@ -1,0 +1,10 @@
+<style>
+#popup-{{ name }}-icon {
+	-webkit-mask-image: url('data:image/svg+xml;utf8,{{ data }}');
+	mask-image: url('data:image/svg+xml;utf8,{{ data }}');
+}
+.list-popup #popup-{{ name }}-check:checked + label #popup-{{ name }}-icon {
+	-webkit-mask-image: url('data:image/svg+xml;utf8,{{ data_selected }}');
+	mask-image: url('data:image/svg+xml;utf8,{{ data_selected }}');
+}
+</style>

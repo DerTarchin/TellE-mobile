@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block scene_element %}
+<div class="scene_element scene_element--fadeinup">
+{% endblock %}
+
+{% block navlink %}
+{% if user.settings.default_home_page == "movies" %}
+<a href="{% url 'movies' user.settings.default_movie_list %}">
+  {% include 'converted_svg/movies.svg.html' %}
+</a>
+{% elif user.settings.default_home_page == "shows" %}
+<a href="{% url 'shows' user.settings.default_show_list %}">
+  {% include 'converted_svg/shows.svg.html' %}
+</a>
+{% endif %}
+{% endblock %}
+
+{% block listbar %}
+{% endblock %}
+
+{% block navlink_search %}
+  {% if user.settings.default_home_page == "movies" %}
+  <a href="{% url 'movies' user.settings.default_movie_list %}">
+  {% else %}
+  <a href="{% url 'shows' user.settings.default_show_list %}">
+  {% endif %}
+    {% include 'converted_svg/search_icon_selected.svg.html' %}
+  </a>
+{% endblock %}
+
+{% block content %}
+<div class="search">
+  <form id="search-form" method="GET" action="{% url 'search' %}">
+    <input type="text" autocomplete="off" name="query" placeholder="Search movies, shows and people">
+      <label>
+        <button type="submit">hi</button>
+        {% include "converted_svg/search.svg.html" %}
+      </label>
+  </form>
+
+  {% if not movies and not shows and not people %}
+  <div class="empty-backdrop">
+    {% include "converted_svg/search.svg.html" %}
+    <h1>No Matches!</h1>
+  </div>
+  {% endif %}
+
+  <!-- Movie Posters -->
+  {% if movies %}
+  <h1>MOVIES</h1>
+  <div class="row nopadding grid row-0">
+    {% for item in movies %}
+      {% if user.settings.default_search_view == "poster" %}
+        {% include "poster_search.html" with type="movie" %}
+        {% if forloop.counter|divisibleby:3 %}
+          </div>
+          <div class="row nopadding grid">
+        {% endif %}
+      {% else %}
+        {% include "fanart_search.html" %}
+        </div>
+        <div class="row nopadding grid">
+      {% endif %}
+    {% endfor %}
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+          <div class="navbar-space"></div>
+        </div>
+      </div>    
+  {% endif %}
+
+  <!-- Show Posters -->
+  {% if shows %}
+  <h1>SHOWS</h1>
+  <div class="row nopadding grid row-0">
+    {% for item in shows %}
+      {% if user.settings.default_search_view == "poster" %}
+        {% include "poster_search.html" with type="show" %}
+        {% if forloop.counter|divisibleby:3 %}
+          </div>
+          <div class="row nopadding grid">
+        {% endif %}
+      {% else %}
+        {% include "fanart_search.html" %}
+        </div>
+        <div class="row nopadding grid">
+      {% endif %}
+    {% endfor %}
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+          <div class="navbar-space"></div>
+        </div>
+      </div>
+  {% endif %}
+
+  <!-- People -->
+  {% if people %}
+  <h1>PEOPLE</h1>
+  <div class="row nopadding grid" id="search-people">
+    {% for item in people %}
+      {% include "poster_search.html" with type="person" %}
+      {% if forloop.counter|divisibleby:3 %}
+        </div>
+        <div class="row nopadding grid">
+      {% endif %}
+    {% endfor %}
+    </div>
+    <a id="hidden-link">&nbsp;</a>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="navbar-space"></div>
+      </div>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

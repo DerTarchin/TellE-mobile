@@ -1,0 +1,53 @@
+{% load staticfiles %}
+
+<!-- {{ item.title }} -->
+<div class="col-xs-4 nopadding poster grid-item {% for filter in item.list_set.all %}{{ filter.name }} {% endfor %}" trakt_id="{{ item.trakt_id }}">
+	<div class="placeholder" reg="0.13" sm="0.18">
+		<div>
+			{% include "converted_svg/film.svg.html" %}
+			<br><br>{{ item.title }}
+		</div>
+	</div>
+	<div class="template"></div>
+	<div class="img-container">
+		<img class="lazy poster-img" src="{% static 'imgs/placeholder_poster.png' %}" data-original="{{ item.poster_url }}">
+	</div>
+	<div class="overlay">
+		{% include "converted_svg/add_selected.svg.html" %}
+	</div>
+	<div class="grid-info-contents" trakt_id="{{ item.trakt_id }}">
+		<div class="grid-info-text">
+			<span class="thin">{{ item.date|date:"M" }}</span>{{ item.date|date:"j" }}<span class="thin">{{ item.date|date:"Y" }}</span>
+			<span class="grid-info-title">
+				{% with title=item.title.split articles="a an the" lowercase="a b c d e f g h i j k l m n o p q r s t u v w x y z" %}  
+					{% with first=title|first %}
+						{% if first.lower in articles.split %}
+							<span class="thin">{{ first }}</span>
+						{% else %}
+							{{ first }}
+						{% endif %}
+					{% endwith %}
+					{% for word in title|slice:"1:" %}
+						{% if word|slice:"1" in lowercase.split %}
+							<span class="thin">{{ word }}</span>
+						{% else %}
+							{{ word }}
+						{% endif %}
+					{% endfor %}
+				{% endwith %}
+			</span>
+		</div>
+		<div class="grid-info-buttons">
+			<div class="grid-info-button options-icon" trakt_id="{{ item.trakt_id }}" onclick="showListManager({{ item.trakt_id }})">{% include 'converted_svg/options.svg.html' %}</div>
+			<span class="grid-info-button large check-icon-container" onclick='{% if type == "movie" %}mark_watched_movie({{item.trakt_id}});{% else %}alert("show");{% endif %}'>
+				<span class="to-watch-item-icon" id="to-watch-item-icon" {% for filter in item.list_set.all %}{% if "watched" == filter.name %}style="display:none"{% endif %}{% endfor %}>
+					{% include "converted_svg/check.svg.html" %}
+				</span> 
+				<span class="to-watch-item-icon" id="watched-item-icon" {% for filter in item.list_set.all %}{% if "to-watch" == filter.name or "watching" == filter.name %}style="display:none"{% endif %}{% endfor %}>
+					{% include "converted_svg/check_selected.svg.html" %}
+				</span>
+			</span>
+			<div class="grid-info-button"><a href="{% url 'movie_info_page' item.trakt_id %}">{% include 'converted_svg/more.svg.html' %}</a></div>
+		</div>
+	</div>
+</div>

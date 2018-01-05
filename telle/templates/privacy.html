@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block scene_element %}
+<div class="scene_element scene_element--fadeindown">
+{% endblock %}
+
+{% block navlink %}
+{% if user.is_authenticated %}
+    <a href="{% url 'movies' user.settings.default_movie_list %}">
+        {% include 'converted_svg/movies.svg.html' %}
+    </a>
+{% else %}
+    <a href="{% url 'movies' all %}">
+        {% include 'converted_svg/movies.svg.html' %}
+    </a>
+{% endif %}
+{% endblock %}
+
+{% block listbar %}
+{% endblock %}
+
+{% block content %}
+<div class="privacy">
+    PRIVACY POLICY
+
+    <p>This privacy policy governs your use of the software application <span class="highlight">Tell-E</span> ("Application") for mobile devices that was created by&nbsp;<span class="highlight">Hizal Celik</span>.&nbsp;The Application is&nbsp;useful for tracking shows and movies, managing watch history and setting notification alerts for release dates of episodes and movies.&nbsp;</p> 
+    <h4>&nbsp;</h4> 
+    
+    <h4>What information does the Application obtain and how is it used?</h4>
+    <p>The Application stores information on a server, which includes (a) your settings and preferences, (b) your movies, shows, and watch history and (c) your lists. All of this information can only be accessible by you and is not shared with any third parties. In addition to this information, genres of movies and shows added by you are collected for advertisement purposes, but are handled anonymously and no information about movies or shows are collected aside from a list of genres.</p>
+    <p>&nbsp;</p> 
+    
+    <h4><strong>User Provided Information</strong></h4>
+    <p>The Application obtains the information you provide when you download and register the Application.&nbsp;Registration with us is mandatory in order to be able to use the basic features of the Application.</p> 
+    <p>When you register with us and use the Application, you generally provide&nbsp;(a) your name or username, email and password; (b) transaction-related information, such as when you make purchases, respond to any offers, or download or use applications from us; and (c) information you provide us when you contact us for help.</p> 
+    <p>We may also use the information you provided us to contact you from time to time to provide you with important information, required notices and marketing promotions.</p> 
+    <p>&nbsp;</p> 
+    
+    <h4><strong>Automatically Collected Information and Advertisement</strong></h4>
+    <p>The Application does not collect information regarding third party sources used for features such as ticketing and theater information, services that use geo-location, or social media/email platforms for sharing. All information is handled outside of the app, by the parties, features or services themselves, either by the local OS or by third party companies on their websites.</p>
+    <p>In addition, the Application may collect certain information automatically, including, but not limited to, the type of mobile device you use, your mobile operating system, the type of mobile Internet browsers you use, and information about the way you use the Application. This information is used for debugging and improving the experience, design and functionality of the Application.&nbsp;</p>
+    <p></p> 
+    <h4>&nbsp;</h4> 
+    
+    <h4>Does the Application collect precise real time location information of the device?</h4> 
+    <p></p> 
+    <p>This Application does not collect information about the location of your mobile device.&nbsp;</p> 
+    <p>&nbsp;</p> 
+   
+    <h4>Do third parties see and/or have access to information obtained by the Application?</h4> 
+    <p></p> 
+    <p>The only information that is sent to third parties are the genres that you are most interested in, accumulated from your watch history. All information is anonymous and does not include actual show or movie information aside from genres. We will share your information with third parties only in the ways that are described in this privacy statement.</p> 
+    <p>We may disclose User Provided and Automatically Collected Information:</p> 
+    <ul> 
+     <li>as required by law, such as to comply with a subpoena, or similar legal process;</li> 
+     <li>when we believe in good faith that disclosure is necessary to protect our rights, protect your safety or the safety of others, investigate fraud, or respond to a&nbsp;government request;</li> 
+     <li>with our trusted services providers who work on our behalf, do not have an&nbsp;independent use of the information we disclose to them, and have agreed to adhere&nbsp;to the rules set forth in this privacy statement.</li> 
+     <li>if&nbsp;Hizal Celik&nbsp;is involved in a merger, acquisition, or sale of all or a&nbsp;portion of its assets, you will be notified via email and/or a prominent notice on our Web site of any change in ownership or uses of this information, as well as any choices you may have regarding this information.</li> 
+    </ul> 
+    <p></p> 
+    <p>&nbsp;</p> 
+    <h4>What are my opt-out rights?</h4> 
+    <p></p> 
+    <p>You can stop all collection of information by the Application easily by deleting your account from the settings page and/or uninstalling the Application. You may use the standard uninstall processes as may be available as part of your mobile device or via the mobile application marketplace or network. You can delete all existing information on your account by deleting your account from the settings page.</p> 
+    <p>&nbsp;</p> 
+    <h4><strong>Data Retention Policy, Managing Your Information</strong></h4> 
+    <p>We will retain User Provided data for as long as you use the Application and for a reasonable time thereafter unless information is cleared by you as outlined above. We will retain Automatically Collected information for up to 24 months&nbsp;and thereafter may store it in aggregate. If you’d like us to delete User Provided Data that you have provided via the Application, please delete your account or contact us and we will respond in a reasonable time. Please note that some or all of the User Provided Data may be required in order for the Application to function properly while your account is still active.</p> 
+    <p>&nbsp;</p> 
+    <h4><strong>Children</strong></h4> 
+    <p></p> 
+    <p>We do not use the Application to knowingly solicit data from or market to children under the age of 13. If a parent or guardian becomes aware that his or her child has provided us with information without their consent, he or she should contact us. We will delete such information from our files within a reasonable time.</p> 
+    <h4>&nbsp;</h4> 
+    <h4><strong>Security</strong></h4> 
+    <p></p> 
+    <p>We are concerned about safeguarding the confidentiality of your information. We provide physical, electronic, and procedural safeguards to protect information we process and maintain. For example, we limit access to this information to authorized employees and contractors who need to know that information in order to operate, develop or improve our Application. Please be aware that, although we endeavor provide reasonable security for information we process and maintain, no security system can prevent all potential security breaches.</p> 
+    <p>&nbsp;</p> 
+    <h4><strong>Changes</strong></h4> 
+    <p>This Privacy Policy may be updated from time to time for any reason. We will notify you of any changes to our Privacy Policy by updating the current Privacy Policy on this page and informing you via email. You are advised to consult this Privacy Policy regularly for any changes, as continued use is deemed approval of all changes.</p> 
+    <p>&nbsp;</p> 
+    <h4><strong>Your Consent</strong></h4> 
+    <p>By using the Application, you are consenting to our processing of your information as set forth in this Privacy Policy now and as amended by us. "Processing," means using cookies on a computer/hand held device or using or touching information in any way, including, but not limited to, collecting, storing, deleting, using, combining and disclosing information, all of which activities will take place in the United States. If you reside outside the United States&nbsp;your information will be transferred, processed and stored there under United States&nbsp;privacy standards.&nbsp;</p> 
+    <p>&nbsp;</p> 
+    <!-- <h4>Contact us</h4> 
+    <p>If you have any questions regarding privacy while using the Application, or have questions about our practices, please contact us via email at&nbsp;privacy@applicationsite.com.</p> -->
+    <!-- <h3>&nbsp;</h3>  -->
+    <div class="privacy-link">
+        <a href="{% url 'settings' %}">BACK</a>
+    </div>
+</div>
+{% endblock %}

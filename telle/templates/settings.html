@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block scene_element %}
+<div class="scene_element scene_element--fadeindown">
+{% endblock %}
+
+{% block navlink %}
+<a href="{% url 'movies' user.settings.default_movie_list %}">
+    {% include 'converted_svg/movies.svg.html' %}
+</a>
+{% endblock %}
+
+{% block navlink_settings %}
+<a href="{% url 'shows' user.settings.default_show_list %}">
+    {% include 'converted_svg/shows.svg.html' %}
+</a>
+{% endblock %}
+
+{% block listbar %}
+{% endblock %}
+
+{% block content %}
+<div class="settings">
+    SETTINGS
+    <form class="settings-form" url="{% url 'settings' %}">
+        <section>
+            <span class="title">LAYOUT</span>
+            <div>
+                <span class="switch-title">MOVIES</span>
+                <div class="switch">
+                    <input type="radio" class="switch-input" name="default_movie_view" value="poster" id="settings-movie-view_mode-poster" {% if user.settings.default_movie_view == "poster" %}checked{% endif %}>
+                    <label for="settings-movie-view_mode-poster" class="switch-label switch-label-off">Poster</label>
+                    <input type="radio" class="switch-input" name="default_movie_view" value="fanart" id="settings-movie-view_mode-fanart"{% if user.settings.default_movie_view == "fanart" %}checked{% endif %}>
+                    <label for="settings-movie-view_mode-fanart" class="switch-label switch-label-on">Banner</label>
+                    <span class="switch-selection"></span>
+                </div> 
+            </div>
+            <div>
+                <span class="switch-title">SHOWS</span>
+                <div class="switch">
+                    <input type="radio" class="switch-input" name="default_show_view" value="poster" id="settings-show-view_mode-poster" {% if user.settings.default_show_view == "poster" %}checked{% endif %}>
+                    <label for="settings-show-view_mode-poster" class="switch-label switch-label-off">Poster</label>
+                    <input type="radio" class="switch-input" name="default_show_view" value="fanart" id="settings-show-view_mode-fanart" {% if user.settings.default_show_view == "fanart" %}checked{% endif %}>
+                    <label for="settings-show-view_mode-fanart" class="switch-label switch-label-on">Banner</label>
+                    <span class="switch-selection"></span>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">SEARCH</span>
+                <div class="switch">
+                    <input type="radio" class="switch-input" name="default_search_view" value="poster" id="settings-search-view_mode-poster" {% if user.settings.default_search_view == "poster" %}checked{% endif %}>
+                    <label for="settings-search-view_mode-poster" class="switch-label switch-label-off">Poster</label>
+                    <input type="radio" class="switch-input" name="default_search_view" value="fanart" id="settings-search-view_mode-fanart" {% if user.settings.default_search_view == "fanart" %}checked{% endif %}>
+                    <label for="settings-search-view_mode-fanart" class="switch-label switch-label-on">Banner</label>
+                    <span class="switch-selection"></span>
+                </div>
+            </div>
+        </section>
+        <section>
+            <span class="title">LIST VIEW</span>
+            <div>
+                <span class="switch-title">MOVIES</span>
+                <div class="selector">
+                    <select name="default_movie_list">
+                        {% for list in lists %}
+                            {% if list.name != "watching" %}
+                                <option value="{{ list.name }}" {% if user.settings.default_movie_list == list.name %}checked selected="selected"{% endif %}>{{ list.pretty_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">SHOWS</span>
+                <div class="selector">
+                    <select name="default_show_list">
+                        {% for list in lists %}
+                            <option value="{{ list.name }}" {% if user.settings.default_show_list == list.name %}checked selected="selected"{% endif %}>{{ list.pretty_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </section>
+        <section>
+            <span class="title">SORT BY</span>
+            <div>
+                <span class="switch-title">MOVIES</span>
+                <div class="selector">
+                    <select name="sort_movie_by">
+                        <!-- <option value="date_added" {% if user.settings.sort_movie_by == "date_added" %}checked selected="selected"{% endif %}>Date Added</option> -->
+                        <option value="-date" {% if user.settings.sort_movie_by == "-date" %}checked selected="selected"{% endif %}>Release Date</option>
+                        <option value="title" {% if user.settings.sort_movie_by == "title" %}checked selected="selected"{% endif %}>Alphabetical</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">SHOWS</span>
+                <div class="selector">
+                    <select name="sort_show_by">
+                        <!-- <option value="date_added" {% if user.settings.sort_show_by == "date_added" %}checked selected="selected"{% endif %}>Date Added</option> -->
+                        <option value="latest_episode" {% if user.settings.sort_show_by == "latest_episode" %}checked selected="selected"{% endif %}>Latest Episode</option>
+                        <option value="alphabetical" {% if user.settings.sort_show_by == "alphabetical" %}checked selected="selected"{% endif %}>Alphabetical</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+        <section>
+            <span class="title">MANAGE LISTS</span>
+            <div>
+                <span class="switch-title">LIST</span>
+                <div class="selector">
+                    <select name="manage_list">
+                        {% for list in lists %}
+                            {% if list.type != "default" %}
+                                <option value="{{ list.name }}">{{ list.pretty_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">RULE</span>
+                <div class="selector">
+                    <select name="manage_list_rule">
+                        <option value="before_date">Before Date</option>
+                        <option value="after_date">After Date</option>
+                        <option value="between_dates">Between Dates</option>
+                        <option value="genre">Genre</option>
+                        <option value="cast_member">Cast Member</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">[PARAM]</span>
+                <div class="switch">
+                    <span style="font-size: 20px;position:relative; top: -10px;margin-left: 20px">
+                    #TODO add input
+                    </span>
+                </div>
+            </div>
+            <div>
+                <div class="popup-buttons small" onclick="delete_list()" id="delete_list_button" url="{% url 'delete_list' %}">delete list</div>
+                <div class="popup-buttons small">apply</div>
+            </div>
+        </section>
+        <section>
+            <span class="title">NOTIFICATIONS</span>
+            <div>
+                <span class="switch-title">MOVIES</span>
+                <div class="selector">
+                    <select name="default_movie_alert">
+                        <option value="week_before" {% if user.settings.default_movie_alert == "week_before" %}checked selected="selected"{% endif %}>1 Week Before</option>
+                        <option value="day_before" {% if user.settings.default_movie_alert == "day_before" %}checked selected="selected"{% endif %}>1 Day Before</option>
+                        <option value="day_of" {% if user.settings.default_movie_alert == "day_of" %}checked selected="selected"{% endif %}>Release Day</option>
+                        <option value="day_after" {% if user.settings.default_movie_alert == "day_after" %}checked selected="selected"{% endif %}>1 Day After</option>
+                        <option value="week_after" {% if user.settings.default_movie_alert == "week_after" %}checked selected="selected"{% endif %}>1 Week After</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">SHOWS</span>
+                <div class="selector">
+                    <select name="default_show_alert">
+                        <option value="week_before" {% if user.settings.default_show_alert == "week_before" %}checked selected="selected"{% endif %}>1 Week Before</option>
+                        <option value="day_before" {% if user.settings.default_show_alert == "day_before" %}checked selected="selected"{% endif %}>1 Day Before</option>
+                        <option value="hour_before" {% if user.settings.default_show_alert == "hour_before" %}checked selected="selected"{% endif %}>1 Hour Before</option>
+                        <option value="15_before" {% if user.settings.default_show_alert == "15_before" %}checked selected="selected"{% endif %}>15 Min Before</option>
+                        <option value="15_after" {% if user.settings.default_show_alert == "15_after" %}checked selected="selected"{% endif %}>15 Min After</option>
+                        <option value="hour_after" {% if user.settings.default_show_alert == "hour_after" %}checked selected="selected"{% endif %}>1 Hour After</option>
+                        <option value="day_after" {% if user.settings.default_show_alert == "day_after" %}checked selected="selected"{% endif %}>1 Day After</option>
+                        <option value="week_after" {% if user.settings.default_show_alert == "week_after" %}checked selected="selected"{% endif %}>1 Week After</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">EMAIL</span>
+                <div class="switch">
+                    <input type="radio" class="switch-input" name="alert_by_email" value="true" id="settings-alert-email_true" {% if user.settings.alert_by_email == "true" %}checked{% endif %}>
+                    <label for="settings-alert-email_true" class="switch-label switch-label-off">Yes</label>
+                    <input type="radio" class="switch-input" name="alert_by_email" value="false" id="settings-alert-email_false" {% if user.settings.alert_by_email == "false" %}checked{% endif %}>
+                    <label for="settings-alert-email_false" class="switch-label switch-label-on">No</label>
+                    <span class="switch-selection"></span>
+                </div> 
+            </div>
+        </section>
+        <section>
+            <span class="title">ACCOUNT</span>
+            <div>
+                <span class="switch-title">NAME</span>
+                <div class="switch">
+                    <span style="font-size: 20px;position:relative; top: -10px;margin-left: 20px">
+                    #TODO add input
+                    </span>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">EMAIL</span>
+                <div class="switch">
+                    <span style="font-size: 20px;position:relative; top: -10px;margin-left: 20px">
+                    #TODO add input
+                    </span>
+                </div>
+            </div>
+            <div>
+                <span class="switch-title">HOME</span>
+                <div class="switch">
+                    <input type="radio" class="switch-input" name="default_home_page" value="movies" id="settings-homepage-movies" {% if user.settings.default_home_page == "movies" %}checked{% endif %}>
+                    <label for="settings-homepage-movies" class="switch-label switch-label-off">Movies</label>
+                    <input type="radio" class="switch-input" name="default_home_page" value="shows" id="settings-homepage-shows" {% if user.settings.default_home_page == "shows" %}checked{% endif %}>
+                    <label for="settings-homepage-shows" class="switch-label switch-label-on">Shows</label>
+                    <span class="switch-selection"></span>
+                </div> 
+            </div>
+            <div>
+                <a class="no-smoothState" href="{% url 'delete_account' %}" onclick="return confirm('You are about to delete your account. You cannot undo this action.');">
+                    <div class="popup-buttons small red">delete</div>
+                    <div class="popup-buttons small">unlock full</div>
+                </a>
+            </div>
+        </section>
+        {% csrf_token %}
+        <section>
+            <div class="privacy-link">
+                View our privacy policy <a href="{% url 'policy' %}">here</a>
+            </div>
+        </section>
+    </form>
+    <!-- <div class="row nopadding grid"> -->
+        <div class="navbar-space">&nbsp;</div>
+    <!-- </div> -->
+</div>
+{% endblock %}

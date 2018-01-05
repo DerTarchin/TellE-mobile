@@ -1,0 +1,69 @@
+{% load staticfiles %}
+
+<!-- {{ item.title }} -->
+<div class="col-xs-4 nopadding poster grid-item" trakt_id="{{ item.ids.trakt }}" type="{{ item.type }}" {% if type == "person" %}url="{% url 'person_info_page' item.ids.trakt %}"{% endif %}>
+	<div class="placeholder" reg="0.13" sm="0.18">
+		<div>
+			{% if item.type == "person" %}
+				{% include "converted_svg/person.svg.html" %}
+				<br><br>{{ item.name }}
+			{% else %}
+				{% include "converted_svg/film.svg.html" %}
+				<br><br>{{ item.title }}
+			{% endif %}
+		</div>
+	</div>
+	<div class="template"></div>
+	{% if type != "person" and item.images.poster.thumb != None %}
+		<div class="img-container">
+			<img class="lazy poster-img" src="{% static 'imgs/placeholder_poster.png' %}" data-original="{{ item.images.poster.thumb }}">
+		</div>
+	{% elif item.images.headshot.thumb %}
+		<div class="img-container">
+			<img class="lazy poster-img" src="{% static 'imgs/placeholder_poster.png' %}" data-original="{{ item.images.headshot.thumb }}">
+		</div>
+	{% endif %}
+	{% if item.type != "person" %}
+	<div class="grid-info-contents" trakt_id="{{ item.ids.trakt }}">
+		<span class="grid-info-sub">{{ item.year }}</span>
+		<span class="grid-info-title">
+			{% with title=item.title.split articles="a an the" lowercase="a b c d e f g h i j k l m n o p q r s t u v w x y z" %}  
+				{% with first=title|first %}
+					{% if first.lower in articles.split %}
+						<span class="thin">{{ first }}</span>
+					{% else %}
+						{{ first }}
+					{% endif %}
+				{% endwith %}
+				{% for word in title|slice:"1:" %}
+					{% if word|slice:"1" in lowercase.split %}
+						<span class="thin">{{ word }}</span>
+					{% else %}
+						{{ word }}
+					{% endif %}
+				{% endfor %}
+			{% endwith %}
+		</span>
+		<div class="grid-info-buttons">
+			<div class="grid-info-button large" id="add-icon">
+				<form class="add-media-form" url="{% url 'add_media' %}" id="search-add-{{ item.ids.trakt }}">
+					 <input type="hidden" name="media-id" value="{{ item.ids.trakt }}">
+					 <input type="hidden" name="media-type" value="{{ item.type }}">
+	 				 {% csrf_token %}
+					 <label>
+						<button type="submit"></button>
+						{% include "converted_svg/add.svg.html" %}
+					 </label>
+			    </form>
+			</div>
+			<div class="grid-info-button large" id="added-icon" style="display:none" onclick="if(confirm('Are you sure you want to delete this? It cannot be undone.')) remove_media({{ item.ids.trakt }});">
+				{% include "converted_svg/add_selected.svg.html" %}
+			</div>
+			{% if item.type != "person" %}
+				<div class="grid-info-button large"><a href="{% url 'movie_info_page' item.ids.trakt %}">{% include 'converted_svg/more.svg.html' %}</a></div>
+			{% else %}
+			{% endif %}
+		</div>
+	</div>
+	{% endif %}
+</div>
